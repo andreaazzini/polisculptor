@@ -36,4 +36,4 @@ var reduce = function(key, values) {
     return count;
 }
 
-db.immigration.mapReduce(map, reduce, {out: "immigration_word_count"});
+db.getCollection(collection).mapReduce(map, reduce, {out: "{collection}_word_count"});

@@ -30,13 +30,13 @@ elif [ "$collection_flag" = false ]; then
     exit 1;
 else
     echo "Sculpting...";
-    mongo $d sculptor.js --quiet;
+    mongo $d sculptor.js --eval "var collection='${c}'" --quiet;
 
     echo "Exporting data...";
     mongoexport --quiet --jsonArray --sort "{value: -1}" --limit 100 --db $d --collection "${c}_word_count" --out data/"${c}.json";
 
     echo "Finishing...";
-    ./decorator.js;
+    ./decorator.js $c;
 
     echo "Done!";
 fi

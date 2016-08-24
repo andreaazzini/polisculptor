@@ -2,7 +2,8 @@
 
 var fs = require('fs');
 
-var json = JSON.parse(fs.readFileSync('data/immigration.json', 'utf8'));
+var filename = 'data/' + process.argv[2] + '.json';
+var json = JSON.parse(fs.readFileSync(filename, 'utf8'));
 
 newJson = [];
 for (obj in json) {
@@ -12,4 +13,4 @@ for (obj in json) {
   delete json[obj].value;
 }
 
-fs.writeFileSync('data/immigration.json', JSON.stringify(json), 'utf8');
+fs.writeFileSync(filename, JSON.stringify(json), 'utf8');
