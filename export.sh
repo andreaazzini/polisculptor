@@ -29,14 +29,23 @@ elif [ "$collection_flag" = false ]; then
     echo "Collection information is missing" 1>&2;
     exit 1;
 else
+    echo "Converting CSV files...";
+    mkdir -p ./data/json
+    mkdir -p ./data/json/parties
+    mkdir -p ./data/json/topics
+    node parser.js $d $c;
+
     echo "Sculpting...";
-    mongo $d sculptor.js --eval "var collection='${c}'" --quiet;
+    partywords=$(<./data/json/parties/${d}.json);
+    topicwords=$(<./data/json/topics/${c}.json);
+    mongo $d sculptor.js --eval "var collection='${c}', partywords=$partywords, topicwords=$topicwords;" --quiet;
 
     echo "Exporting data...";
-    mongoexport --quiet --jsonArray --sort "{value: -1}" --limit 100 --db $d --collection "${c}_word_count" --out data/"${c}.json";
+    mkdir -p ./data/export
+    mongoexport --quiet --jsonArray --sort "{value: -1}" --limit 100 --db $d --collection "${c}_word_count" --out data/export/"${c}.json";
 
     echo "Finishing...";
-    ./decorator.js $c;
+    node decorator.js $d $c;
 
     echo "Done!";
 fi
